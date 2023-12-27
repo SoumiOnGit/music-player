@@ -2,16 +2,17 @@ from flask import Flask , render_template , request , redirect , url_for
 from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite://users.db' # flask innitialises sqlalchemy for db operations , it will use the specified db sqlite files for storage (users.db)
+app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///users.db' # flask innitialises sqlalchemy for db operations , it will use the specified db sqlite files for storage (users.db)
 db = SQLAlchemy(app) #binding sql to flask app
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key= True)
-    username = db.Column(db.string(80), unique= True, nullable= False)
-    password = db.Column(db.string(20), nullable= False)
-    email = db.Column(db.string(50), unique= True, nullable= False)
+    username = db.Column(db.String(80), unique= True, nullable= False)
+    password = db.Column(db.String(20), nullable= False)
+    email = db.Column(db.String(50), unique= True, nullable= False)
 
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/')
@@ -20,6 +21,7 @@ def index():
 
 @app.route('/signup' , methods = ['GET', 'POST']) #when you define a route or view function, you can use the methods attribute to specify which HTTP methods the route should handle. GET :Used to retrieve information from the server. POST : Used to submit data to be processed to a specified resource. Often used for creating or updating a resource on the server.
 def signup():
+    print(request.form)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -50,5 +52,5 @@ def login():
         
     return render_template('login.html')
     
-if __name__=='main':
+if __name__=='__main__':
     app.run(debug=True)
