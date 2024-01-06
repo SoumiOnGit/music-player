@@ -10,6 +10,14 @@ class User(db.Model):
     username = db.Column(db.String(80), unique= True, nullable= False)
     password = db.Column(db.String(20), nullable= False)
     email = db.Column(db.String(50), unique= True, nullable= False)
+    role = db.Column(db.String(10), nullable= False , default='user')
+
+class Artist(db.Model):
+    id =  db.Column(db.Integer, primary_key= True)
+    name = db.Column(db.String(100), nullable=False)
+    genre = db.Column(db.String(50), nullable=False)
+    bio = db.Column(db.Text, nullable=True)
+    albums = db.relationship('Album', backref='artist', lazy=True) #In SQLAlchemy,backref used to create a back reference in the related model. It provides a way to access the related model from the other side of the relationship
 
 with app.app_context():
     db.create_all()
